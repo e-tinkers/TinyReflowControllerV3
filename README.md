@@ -4,9 +4,7 @@ The key part of the code in this repository is based on Rocket Scream's [TinyRef
 
 I don't use the Rocket Scream' TinyReflow Controller hardware either, instead I built an Arduino shield which hosts a 1.3" SH-1106-based OLED (which is different from Rocket Scream's SSD1306-based OLED), with an external MAX31855 breakout board, and all the necessary control circuitry soldered on a 6x8cm prototyping board. An Arduino Leonardo was used as the MCU.
 
-![UYue 946-1010 Preheater Station](https://github.com/e-tinkers/TinyReflowControllerV3/blob/master/resources/UYue_946-1010.jpg "UYue 946-1010 Preheater Station")
-
-A UYue 946-1010 Preheater Station is reconfigured by replacing preheater's original controller board with the self-build controller. The idea of hacking a UYue Preheater was inspired by [DigiCool Things' youtube videos](https://youtu.be/ZxsIIwjR5n8).
+A [UYue 946-1010](https://github.com/e-tinkers/TinyReflowControllerV3/blob/master/resources/UYue_946-1010.jpg) Preheater Station is reconfigured by replacing preheater's original controller board with the self-build controller. The idea of hacking a UYue Preheater was inspired by [DigiCool Things' youtube videos](https://youtu.be/ZxsIIwjR5n8).
 
 <!-- Further detail description on how to build the solder reflow hot plate can be found at [e-tinkers.com](). -->
 
