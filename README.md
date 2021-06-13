@@ -27,3 +27,6 @@ Dealing with high voltage is a very dangerous act! Please make sure you know wha
 ## Licences
 
 This Tiny Reflow Controller hardware and firmware are released under the [Creative Commons Share Alike v3.0 license](http://creativecommons.org/licenses/by-sa/3.0/). You are free to take this piece of code, use it and modify it. All we ask is attribution including the supporting libraries used in this firmware.
+
+## Others
+This firmware has also been tested on an E-Tinkers' [ATtiny3217 Dev Board](https://github.com/e-tinkers/attiny3217) running on [megaTinyCore](  https://github.com/SpenceKonde/megaTinyCore).
