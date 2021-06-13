@@ -20,3 +20,10 @@ If you are using Arduino IDE, you will have to download and install the librarie
 
 ## Schematic
 The interconnection of various parts is outlined in [schematic](https://github.com/e-tinkers/TinyReflowControllerV3/blob/master/resources/TinyReflowControllerV3.pdf). The Solid State Relay and Thermocouple are re-used with the parts that came with the UYue Preheater.
+
+## Disclaimer
+Dealing with high voltage is a very dangerous act! Please make sure you know what you are dealing with and have proper knowledge before hand. Your use of any information or materials on this Tiny Reflow Controller is entirely at your own risk, for which we shall not be liable.
+
+## Licences
+
+This Tiny Reflow Controller hardware and firmware are released under the [Creative Commons Share Alike v3.0 license](http://creativecommons.org/licenses/by-sa/3.0/). You are free to take this piece of code, use it and modify it. All we ask is attribution including the supporting libraries used in this firmware.

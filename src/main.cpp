@@ -89,6 +89,19 @@
   https://github.com/SpenceKonde/ATTinyCore
   https://github.com/SpenceKonde/megaTinyCore
 
+  ==========================================
+  Bill Greiman (github.com/greiman)
+  ==========================================
+  Maintainer of SSD1306Ascii library usedin V3.00:
+  https://github.com/greiman/SSD1306Ascii
+
+  ==========================================
+  Henry Cheung (www.e-tinkers.com/about)
+  ==========================================
+  Maintainer of Button and MAX31855 libraries used in V3.00:
+  https://github.com/e-tinkers/button
+  https://github.com/e-tinkers/MAX31855
+
   Disclaimer
   ==========
   Dealing with high voltage is a very dangerous act! Please make sure you know
