@@ -167,7 +167,7 @@
 #include <button.h>
 
 // ***** ENABLE SERIAL PRINTOUT OUTPUT *****
-#define SERIAL_PRINTOUT
+// #define SERIAL_PRINTOUT
 
 // ***** GENERAL PROFILE CONSTANTS *****
 #define PROFILE_TYPE_ADDRESS 0
@@ -368,7 +368,7 @@ inline void updateDisplay()
     oled.print(F("150"));
     oled.setCursor(0, 6);
     oled.print(F(" 50"));
-    for (uint8_t i = 17; i<SCREEN_HEIGHT-1; i++)
+    for (uint8_t i = 18; i<SCREEN_HEIGHT-1; i++)
       drawPixel(X_AXIS_START, i, true);    // draw a vertical line
     for (uint8_t i = X_AXIS_START+1; i<SCREEN_WIDTH; i++)
       drawPixel(i, SCREEN_HEIGHT-1);       // draw a horizontal line
@@ -401,7 +401,7 @@ inline void updateDisplay()
 
     for (uint8_t timeAxis = 0; timeAxis < idx; timeAxis++)
     {
-      drawPixel(timeAxis + X_AXIS_START, temperature[timeAxis]);
+      drawPixel(timeAxis + X_AXIS_START + 1, temperature[timeAxis]);
     }
 
 }
@@ -471,7 +471,7 @@ void setup()
 
 void loop()
 {
-  unsigned long buzzerPeriod;
+  static unsigned long buzzerPeriod;
 
   // update display every UPDATE_RATE(100ms)
   if (millis() - updateLcd >= UPDATE_RATE)
@@ -549,7 +549,7 @@ void loop()
           // Initialize reflow plot update timer
           temperatureUpdate = 0;
 
-          for (idx = 0; idx < (SCREEN_WIDTH - X_AXIS_START); idx++)
+          for (idx = 0; idx < (SCREEN_WIDTH - X_AXIS_START+1); idx++)
           {
             temperature[idx] = 0;
           }
@@ -620,15 +620,17 @@ void loop()
       break;
 
     case REFLOW_STATE_REFLOW:
-      // We need to avoid hovering at peak temperature for too long
-      // Crude method that works like a charm and safe for the components
+      // Temperature continue to rise by 10 degree when reach reflowTemperatureMax
+      // To avoid hovering at peak temperature for too long, switch to CoolDn earlier
       if (thermoReading >= (reflowTemperatureMax - 10))
       {
         // Set PID parameters for cooling ramp
         reflowOvenPID.SetTunings(PID_KP_REFLOW, PID_KI_REFLOW, PID_KD_REFLOW);
         // Ramp down to minimum cooling temperature
         setpoint = TEMPERATURE_COOL_MIN;
-        // Proceed to cooling state
+      }
+      if (thermoReading >= reflowTemperatureMax) {
+        // Display only switch to 'CoolDn' when reach to the peak temp
         reflowState = REFLOW_STATE_COOL;
       }
       break;
@@ -641,6 +643,7 @@ void loop()
         buzzerPeriod = millis() + 1000;
         // Turn on buzzer to indicate completion
         digitalWrite(buzzerPin, HIGH);
+        digitalWrite(fanPin, HIGH);
         // Turn off reflow process
         reflowStatus = REFLOW_STATUS_OFF;
         // Proceed to reflow Completion state
@@ -662,7 +665,7 @@ void loop()
       // If oven temperature drops below room temperature
       if (thermoReading < TEMPERATURE_ROOM)
       {
-        // Ready to reflow
+        digitalWrite(fanPin, LOW);
         reflowState = REFLOW_STATE_IDLE;
       }
       break;
