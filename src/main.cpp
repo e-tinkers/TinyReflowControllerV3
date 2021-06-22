@@ -357,18 +357,6 @@ inline void updateDisplay()
       oled.print(F("TC"));
     }
 
-    // Temperature markers and time axis
-    oled.setCursor(0, 2);
-    oled.print(F("250"));
-    oled.setCursor(0, 4);
-    oled.print(F("150"));
-    oled.setCursor(0, 6);
-    oled.print(F(" 50"));
-    for (uint8_t i = 18; i<SCREEN_HEIGHT-1; i++)
-      drawPixel(X_AXIS_START, i, true);    // draw a vertical line
-    for (uint8_t i = X_AXIS_START+1; i<SCREEN_WIDTH; i++)
-      drawPixel(i, SCREEN_HEIGHT-1);       // draw a horizontal line
-
     // Right align temperature reading
     char tempStr[10];
     sprintf(tempStr, "%4d", (int)thermoReading);
@@ -451,7 +439,19 @@ void setup()
   digitalWrite(buzzerPin, LOW);
   delay(3000);
   digitalWrite(ledPin, LOW);
+
+  // Temperature markers and time axis
   oled.clear();
+  oled.setCursor(0, 2);
+  oled.print(F("250"));
+  oled.setCursor(0, 4);
+  oled.print(F("150"));
+  oled.setCursor(0, 6);
+  oled.print(F(" 50"));
+  for (uint8_t i = 18; i<SCREEN_HEIGHT-1; i++)
+    drawPixel(X_AXIS_START, i, true);    // draw a vertical line
+  for (uint8_t i = X_AXIS_START+1; i<SCREEN_WIDTH; i++)
+    drawPixel(i, SCREEN_HEIGHT-1);       // draw a horizontal line
 
   // Initialize thermocouple interface
   if (thermocouple.begin() != 0) {
