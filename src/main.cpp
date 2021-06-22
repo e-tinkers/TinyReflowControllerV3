@@ -375,7 +375,8 @@ inline void updateDisplay()
         {
           temperatureUpdate = timerSeconds;
           uint8_t averageReading = map(thermoReading, 0, 260, 63, 19);
-          if (idx < (SCREEN_WIDTH - X_AXIS_START))
+          // only plot the chart when temperature raised to TEMPERATURE_ROOM(i.e. 50 C)
+          if ((idx < (SCREEN_WIDTH - X_AXIS_START)) & (thermoReading > TEMPERATURE_ROOM))
           {
             temperature[idx++] = averageReading;
           }
