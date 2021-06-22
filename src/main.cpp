@@ -309,11 +309,7 @@ void printDegreeSymbol() {
 /* A helper function for drawing a pixel on SH1106 display */
 void drawPixel() __attribute__((always_inline));
 inline void drawPixel(uint8_t x, uint8_t y, bool stackUp=false) {
-  x +=2;    //SH1106 is 132 x 64 display, there is a 2-pixel margin on both sides
-  x %= 128;
-  oled.ssd1306WriteCmd(0xB0 | (y >> 3));    // set page
-  oled.ssd1306WriteCmd(0x10 | (x >> 4));    // set column
-  oled.ssd1306WriteCmd(x & 0x0F);
+  oled.setCursor(x, y>>3);
   Wire.beginTransmission(I2C_ADDRESS);
   uint8_t colData = 0;
   if (stackUp)         // if going to be a vertical line, it need to get the existing data
@@ -375,8 +371,8 @@ inline void updateDisplay()
 
     // Right align temperature reading
     char tempStr[10];
-    sprintf(tempStr, "%3d", (int)thermoReading);
-    oled.setCursor(80, 1);
+    sprintf(tempStr, "%4d", (int)thermoReading);
+    oled.setCursor(74, 1);
     oled.print(tempStr);
     printDegreeSymbol();
     oled.print(F("C"));
