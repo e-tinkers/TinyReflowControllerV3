@@ -6,6 +6,9 @@ I didn't use the Rocket Scream's TinyReflow Controller hardware either, instead 
 
 A [UYue 946-1010](https://github.com/e-tinkers/TinyReflowControllerV3/blob/master/resources/UYue_946-1010.jpg) Preheater Station is reconfigured by replacing preheater's original controller board with the self-build controller. The idea of hacking a UYue Preheater was inspired by [DigiCool Things' youtube videos](https://youtu.be/ZxsIIwjR5n8).
 
+> ## Disclaimer
+> Dealing with high voltage is a very dangerous act! Please make sure you know what you are dealing with and have proper knowledge before hand. Your use of any information or materials on this Tiny Reflow Controller is entirely at your own risk, for which we shall not be liable.
+
 ## Dependencies
 The firmware has the dependencies of several Arduino Libraries, if you are using PlatformIO, it has been setup under the `lib_deps` directive in the `platformio.ini`.
 
