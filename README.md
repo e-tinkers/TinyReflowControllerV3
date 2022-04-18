@@ -1,8 +1,8 @@
 ## Tiny Reflow Controller V3
 
-The key part of the code in this repository is based on Rocket Scream's [TinyReflowController](https://github.com/rocketscream/TinyReflowController), however this is not a fork, it has been complete rewrite to suit my own build of a solder reflow hot plate. A few libraries used for the firmware are also different from what Rocket Scream used for various reasons.
+The key part of the code in this repository is based on Rocket Scream's TinyReflowController, however this is not a fork, it has been complete rewrite to suit my own build of [a solder reflow hot plate](https://www.e-tinkers.com/2021/07/converting-uyue-preheater-into-a-solder-reflow-hot-plate/). A few libraries used for the firmware are also different from what Rocket Scream used for various reasons.
 
-I didn't use the Rocket Scream's TinyReflow Controller hardware either, instead I built an Arduino shield which hosts a 1.3" SH-1106-based OLED (which is different from Rocket Scream's 0.96" dual-color OLED), with an external MAX31855 breakout board, plus all the necessary control circuitry soldered on a 6x8cm prototyping board. An Arduino Leonardo was used as the MCU.
+I didn't use the Rocket Scream's TinyReflow Controller hardware neither, instead I built an Arduino shield which hosts a 1.3" SH-1106-based OLED (which is different from Rocket Scream's 0.96" dual-color OLED), with an external MAX31855 breakout board, plus all the necessary control circuitry soldered on a 6x8cm prototyping board. An Arduino Leonardo was used as the MCU.
 
 A [UYue 946-1010](https://github.com/e-tinkers/TinyReflowControllerV3/blob/master/resources/UYue_946-1010.jpg) Preheater Station is reconfigured by replacing preheater's original controller board with the self-build controller. The idea of hacking a UYue Preheater was inspired by [DigiCool Things' youtube videos](https://youtu.be/ZxsIIwjR5n8).
 
