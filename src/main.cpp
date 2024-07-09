@@ -1,7 +1,7 @@
 /*******************************************************************************
   Title: Tiny Reflow Controller
-  Version: 3.00
-  Date: 10-Jun-2021
+  Version: 3.01
+  Date:    08-Jul-2024
   Author: Henry Cheung
   Website: www.e-tinkers.com
   ------------------------------------------------------------------------------
@@ -139,7 +139,9 @@
 
   Revision  Description
   ========  ===========
-  3.00      Re-write by Henry Cheung
+  3.01      - Re-factor startup display as a function and call when temperature
+              reached the room temperature to clear the screen.
+  3.00      Re-write by Henry Cheung (Date: 10-Jun-2021)
             - Simplified many parts of the code to make it less less busier.
             - Switch from using Adafruit_SSD1306 library to SSD1306Ascii.h for
               supporting cheap SH-1106-based OLED.
@@ -391,6 +393,34 @@ inline void updateDisplay()
 
 }
 
+void startUpDisplay() {
+  // Start-up splash
+  oled.clear();
+  oled.println(F("     Tiny Reflow"));
+  oled.println(F("     Controller"));
+  oled.println();
+  oled.println(F("     Version 3.01"));
+  oled.println();
+  oled.println(F("     2024-07-08"));
+  delay(500);
+  digitalWrite(buzzerPin, LOW);
+  delay(3000);
+  digitalWrite(ledPin, LOW);
+
+  // Temperature markers and time axis
+  oled.clear();
+  oled.setCursor(0, 2);
+  oled.print(F("250"));
+  oled.setCursor(0, 4);
+  oled.print(F("150"));
+  oled.setCursor(0, 6);
+  oled.print(F(" 50"));
+  for (uint8_t i = 18; i<SCREEN_HEIGHT-1; i++)
+    drawPixel(X_AXIS_START, i, true);    // draw a vertical line
+  for (uint8_t i = X_AXIS_START+1; i<SCREEN_WIDTH; i++)
+    drawPixel(i, SCREEN_HEIGHT-1);       // draw a horizontal line  
+}
+
 void setup()
 {
 #ifdef SERIAL_PRINTOUT
@@ -422,37 +452,14 @@ void setup()
   startBtn.begin(btn1Pin);
   profileBtn.begin(btn2Pin);
 
-  // Start-up splash
   digitalWrite(ledPin, HIGH);   // turn on led and buzzer
   digitalWrite(buzzerPin, HIGH);
   Wire.begin();
   Wire.setClock(400000L);
   oled.begin(&SH1106_128x64, I2C_ADDRESS);
   oled.setFont(font5x7);
-  oled.clear();
-  oled.println(F("     Tiny Reflow"));
-  oled.println(F("     Controller"));
-  oled.println();
-  oled.println(F("     Version 3.00"));
-  oled.println();
-  oled.println(F("     2021-06-10"));
-  delay(500);
-  digitalWrite(buzzerPin, LOW);
-  delay(3000);
-  digitalWrite(ledPin, LOW);
 
-  // Temperature markers and time axis
-  oled.clear();
-  oled.setCursor(0, 2);
-  oled.print(F("250"));
-  oled.setCursor(0, 4);
-  oled.print(F("150"));
-  oled.setCursor(0, 6);
-  oled.print(F(" 50"));
-  for (uint8_t i = 18; i<SCREEN_HEIGHT-1; i++)
-    drawPixel(X_AXIS_START, i, true);    // draw a vertical line
-  for (uint8_t i = X_AXIS_START+1; i<SCREEN_WIDTH; i++)
-    drawPixel(i, SCREEN_HEIGHT-1);       // draw a horizontal line
+  startUpDisplay();
 
   // Initialize thermocouple interface
   if (thermocouple.begin() != 0) {
@@ -546,7 +553,7 @@ void loop()
           // Initialize reflow plot update timer
           temperatureUpdate = 0;
 
-          for (idx = 0; idx < (SCREEN_WIDTH - X_AXIS_START+1); idx++)
+          for (idx = 0; idx < (SCREEN_WIDTH - X_AXIS_START); idx++)
           {
             temperature[idx] = 0;
           }
@@ -663,6 +670,7 @@ void loop()
       if (thermoReading < TEMPERATURE_ROOM)
       {
         digitalWrite(fanPin, LOW);
+        startUpDisplay();
         reflowState = REFLOW_STATE_IDLE;
       }
       break;
