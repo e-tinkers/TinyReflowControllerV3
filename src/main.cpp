@@ -178,6 +178,7 @@
 #define TEMPERATURE_COOL_MIN 100
 #define SENSOR_SAMPLING_TIME 1000    // thermocouple reading interval
 #define SOAK_TEMPERATURE_STEP 5
+#define COOLDOWN_CHECK_TIME 20000
 
 // ***** LEAD FREE PROFILE CONSTANTS *****
 #define TEMPERATURE_SOAK_MAX_LF 200
@@ -284,6 +285,8 @@ unsigned long timerSoak;
 uint8_t soakTemperatureMax;
 uint8_t reflowTemperatureMax;
 unsigned long soakMicroPeriod;
+unsigned long peakTempCheck;
+bool isCooling;
 
 // Seconds timer
 unsigned int timerSeconds;
@@ -390,7 +393,6 @@ inline void updateDisplay()
     {
       drawPixel(timeAxis + X_AXIS_START + 1, temperature[timeAxis]);
     }
-
 }
 
 void startUpDisplay() {
@@ -466,11 +468,9 @@ void setup()
     reflowState = REFLOW_STATE_ERROR;    //thermocouple connection error
   };
 
-
   windowSize = 2000;    // time in ms for PID calculation
   nextRead = millis();
   updateLcd = millis();
-
 }
 
 void loop()
@@ -493,6 +493,7 @@ void loop()
     {
       digitalWrite(ledPin, HIGH);
       timerSeconds++;
+      isCooling = lastThermoReading > thermoReading && setpoint == TEMPERATURE_COOL_MIN;
 
 #ifdef SERIAL_PRINTOUT
       Serial.print(timerSeconds);
@@ -508,6 +509,7 @@ void loop()
     else
     {
       digitalWrite(ledPin, LOW);
+      isCooling = true;
     }
   }
 
@@ -533,6 +535,7 @@ void loop()
   switch (reflowState)
   {
     case REFLOW_STATE_IDLE:
+    default:
       // If oven temperature is still above room temperature
       if (thermoReading >= TEMPERATURE_ROOM)
       {
@@ -626,14 +629,16 @@ void loop()
     case REFLOW_STATE_REFLOW:
       // Temperature continue to rise by 10 degree when reach reflowTemperatureMax
       // To avoid hovering at peak temperature for too long, switch to CoolDn earlier
-      if (thermoReading >= (reflowTemperatureMax - 10))
+      if (thermoReading >= (reflowTemperatureMax - 10) && setpoint != TEMPERATURE_COOL_MIN)
       {
         // Set PID parameters for cooling ramp
         reflowOvenPID.SetTunings(PID_KP_REFLOW, PID_KI_REFLOW, PID_KD_REFLOW);
         // Ramp down to minimum cooling temperature
         setpoint = TEMPERATURE_COOL_MIN;
+        // Set the timer for failsafe mode switch
+        peakTempCheck = millis() + COOLDOWN_CHECK_TIME;
       }
-      if (thermoReading >= reflowTemperatureMax) {
+      if (setpoint == TEMPERATURE_COOL_MIN && (isCooling || millis() > peakTempCheck)) {
         // Display only switch to 'CoolDn' when reach to the peak temp
         reflowState = REFLOW_STATE_COOL;
       }
@@ -674,14 +679,11 @@ void loop()
         reflowState = REFLOW_STATE_IDLE;
       }
       break;
-    default:
-      break;
   }
 
   // PID computation and SSR control
   if (reflowStatus == REFLOW_STATUS_ON)
   {
-
     reflowOvenPID.Compute();
 
     if ((millis() - windowStartTime) > windowSize)
@@ -699,5 +701,4 @@ void loop()
   {
     if (digitalRead(ssrPin)!=LOW) digitalWrite(ssrPin, LOW);
   }
-
 }
